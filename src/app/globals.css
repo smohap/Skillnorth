@@ -1,26 +1,126 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+/*
+ * SkillNorth design tokens.
+ *
+ * Dark and tinted, never pure black. The band colours are semantic rather than
+ * decorative: teal always means "ready to send", amber always means "needs work".
+ * Because they mean something, they are never used for anything else.
+ */
+@theme {
+  --color-bg: #0a0f1e;
+  --color-bg-2: #131c36;
+  --color-bg-3: #1d2a4d;
+
+  --color-surface: rgba(255, 255, 255, 0.055);
+  --color-surface-2: rgba(255, 255, 255, 0.09);
+  --color-line: rgba(255, 255, 255, 0.14);
+  --color-line-soft: rgba(255, 255, 255, 0.08);
+
+  --color-hi: #f3f6fb;
+  --color-mid: #c3cbdc;
+  --color-low: #7c88a3;
+
+  --color-ready: #4fd1c5;
+  --color-confirm: #ffd166;
+  --color-improve: #f5a623;
+  --color-filtered: #ff6b6b;
+  --color-violet: #8b7fff;
+
+  /* Fed by next/font in layout.tsx, which self-hosts them and avoids a CDN round trip. */
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  color: var(--color-hi);
+  background:
+    radial-gradient(circle at 15% 10%, rgba(139, 127, 255, 0.16), transparent 42%),
+    radial-gradient(circle at 90% 15%, rgba(79, 209, 197, 0.14), transparent 38%),
+    linear-gradient(160deg, #0a0f1e, #131c36 55%, #1d2a4d);
+  /*
+   * No `background-attachment: fixed`. Combined with the backdrop-filter glass
+   * surfaces it forces a full-viewport repaint on every scroll frame — the exact
+   * jank that isn't worth a gradient that barely moves anyway. The gradient is
+   * fixed to the bg-3 tail so scrolling past content stays on-brand.
+   */
+  background-color: #1d2a4d;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+
+/*
+ * Glass. `backdrop-filter` is expensive, so it belongs on a few large surfaces —
+ * never on every card in a list.
+ */
+@utility glass {
+  background: rgba(255, 255, 255, 0.055);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+@utility panel {
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+}
+
+/* Focus is never removed, only replaced with something better. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid #4fd1c5;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Tabular numerals, so a score doesn't jitter as it animates. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes sn-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: sn-fade-up 0.28s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
