@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { CompassMark, CompassScore } from '@/components/compass'
+import { Journey3D } from '@/components/journey-3d'
 
 /**
  * Landing page.
@@ -61,13 +62,38 @@ export default function LandingPage() {
             SkillNorth
           </span>
         </div>
-        <Link
-          href="/dashboard"
-          className="rounded-[10px] bg-[#4fd1c5] px-4 py-2.5 text-[13px] font-semibold text-[#06231f] transition hover:brightness-110 active:scale-[0.98]"
-        >
-          See the demo
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/signin"
+            className="rounded-[10px] border border-[rgba(255,255,255,0.14)] px-4 py-2.5 text-[13px] font-semibold text-[#c3cbdc] transition hover:bg-[rgba(255,255,255,0.06)] hover:text-[#f3f6fb]"
+          >
+            Sign in
+          </Link>
+          <Link
+            href="/dashboard"
+            className="rounded-[10px] bg-[#4fd1c5] px-4 py-2.5 text-[13px] font-semibold text-[#06231f] transition hover:brightness-110 active:scale-[0.98]"
+          >
+            See the demo
+          </Link>
+        </div>
       </header>
+
+      {/* The journey, in 3D — the signature moment */}
+      <section className="glass mb-5 overflow-hidden rounded-3xl px-6 py-12 sm:px-12">
+        <div className="mx-auto mb-8 max-w-[54ch] text-center">
+          <span className="font-[family-name:var(--font-mono)] text-[11px] tracking-[0.14em] text-[#8b7fff] uppercase">
+            One continuous loop
+          </span>
+          <h2 className="mt-3 font-[family-name:var(--font-display)] text-[clamp(24px,3.4vw,32px)] font-semibold tracking-[-0.01em]">
+            From a skill gap to a signed offer.
+          </h2>
+          <p className="mt-3 text-[14.5px] leading-[1.7] text-[#c3cbdc]">
+            SkillNorth walks the whole path with you — closing gaps, tailoring the CV, preparing the
+            application, then getting you ready for the room.
+          </p>
+        </div>
+        <Journey3D />
+      </section>
 
       <section className="glass relative mb-5 overflow-hidden rounded-3xl px-8 py-14 sm:px-12 sm:py-20">
         <div

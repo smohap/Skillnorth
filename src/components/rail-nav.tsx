@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { FileText, LayoutDashboard, ListChecks, Search, SlidersHorizontal } from 'lucide-react'
+import { FileText, LayoutDashboard, ListChecks, LogOut, Search, SlidersHorizontal } from 'lucide-react'
 import { CompassMark } from '@/components/compass'
 
 /**
@@ -57,12 +57,23 @@ export function RailNav() {
         )
       })}
 
-      <div className="mt-auto hidden items-center gap-2.5 border-t border-[rgba(255,255,255,0.08)] pt-4 md:flex">
-        <div className="h-8 w-8 flex-none rounded-full bg-gradient-to-br from-[#8b7fff] to-[#4fd1c5]" />
-        <div className="min-w-0">
-          <div className="truncate text-[12.5px] font-semibold">Priya Nathan</div>
-          <div className="truncate text-[10.5px] text-[#7c88a3]">Analytics Engineer</div>
+      <div className="mt-auto hidden flex-col gap-2 border-t border-[rgba(255,255,255,0.08)] pt-4 md:flex">
+        <div className="flex items-center gap-2.5">
+          <div className="h-8 w-8 flex-none rounded-full bg-gradient-to-br from-[#8b7fff] to-[#4fd1c5]" />
+          <div className="min-w-0">
+            <div className="truncate text-[12.5px] font-semibold">Priya Nathan</div>
+            <div className="truncate text-[10.5px] text-[#7c88a3]">Analytics Engineer</div>
+          </div>
         </div>
+        <form action="/auth/signout" method="post">
+          <button
+            type="submit"
+            className="flex w-full items-center gap-2 rounded-[9px] px-2 py-1.5 text-left text-[11.5px] text-[#7c88a3] transition hover:bg-[rgba(255,255,255,0.05)] hover:text-[#c3cbdc]"
+          >
+            <LogOut size={14} strokeWidth={1.7} aria-hidden="true" />
+            Sign out
+          </button>
+        </form>
       </div>
     </nav>
   )
