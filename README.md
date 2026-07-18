@@ -28,8 +28,8 @@ are the same object at two sizes.
 - **Auto-submit to LinkedIn/Seek/Indeed.** Their terms forbid it and it's your
   account at risk. SkillNorth prepares everything; the last click is yours.
 
-See `docs/superpowers/specs/2026-07-17-skillnorth-core-design.md` (one level up from
-this app folder) for the full design and the reasoning behind each of these.
+See [`docs/DESIGN.md`](docs/DESIGN.md) for the full design and the reasoning behind
+each of these.
 
 ## Stack
 
@@ -89,8 +89,8 @@ validator against fabricating model output.
 
 ## Deploying to Vercel
 
-1. Push to `github.com/smohap/Skillnorth`.
-2. Import the repo in Vercel. Root directory: `skillnorth`.
+1. Push to `github.com/smohap/Skillnorth` (this folder is the repo root).
+2. Import the repo in Vercel. Root directory: the repo root (default).
 3. Add the four env vars from `.env.example` in the Vercel project settings.
    `ANTHROPIC_API_KEY` and `SUPABASE_SERVICE_ROLE_KEY` are **server-only** — do not
    prefix them `NEXT_PUBLIC_`.
