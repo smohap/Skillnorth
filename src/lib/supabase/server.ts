@@ -9,6 +9,7 @@
 
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { DB_SCHEMA } from './constants'
 
 export async function createClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -18,6 +19,8 @@ export async function createClient() {
   const cookieStore = await cookies()
 
   return createServerClient(url, anonKey, {
+    // Tables live in the `skillnorth` schema (shared project). Auth is unaffected.
+    db: { schema: DB_SCHEMA },
     cookies: {
       getAll() {
         return cookieStore.getAll()

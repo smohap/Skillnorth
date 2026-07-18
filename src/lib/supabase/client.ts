@@ -10,10 +10,13 @@
  */
 
 import { createBrowserClient } from '@supabase/ssr'
+import { DB_SCHEMA } from './constants'
 
 export function createClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   if (!url || !anonKey) return null
-  return createBrowserClient(url, anonKey)
+  // Our tables live in the `skillnorth` schema, not `public`, because this project
+  // is shared with another app. Auth still works the same; only data queries change.
+  return createBrowserClient(url, anonKey, { db: { schema: DB_SCHEMA } })
 }

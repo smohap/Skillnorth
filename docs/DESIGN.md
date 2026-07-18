@@ -104,8 +104,10 @@ data. They take no database and no network, so they are unit-testable directly.
 
 ## 5. Data model
 
-Postgres, via Supabase. All user-owned tables carry `user_id` and are protected by Row
-Level Security — a user can only ever read and write their own rows.
+Postgres, via Supabase. All tables live in a dedicated `skillnorth` schema (not
+`public`) because the database is shared with another app. All user-owned tables carry
+`user_id` and are protected by Row Level Security — a user can only ever read and write
+their own rows. Storage buckets are prefixed `skillnorth-` for the same reason.
 
 ```
 profiles          id, user_id, full_name, headline, email, phone, location,
