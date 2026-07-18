@@ -13,10 +13,10 @@
 
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { serverSupabaseCredentials } from '@/lib/supabase/server-config'
 
 export async function proxy(request: NextRequest) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const { url, key: anonKey } = serverSupabaseCredentials()
 
   // No Supabase configured (demo mode): pass through untouched.
   if (!url || !anonKey) return NextResponse.next()

@@ -10,10 +10,10 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { DB_SCHEMA } from './constants'
+import { serverSupabaseCredentials } from './server-config'
 
 export async function createClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const { url, key: anonKey } = serverSupabaseCredentials()
   if (!url || !anonKey) return null
 
   const cookieStore = await cookies()

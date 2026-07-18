@@ -34,7 +34,9 @@ function SignInForm() {
     setOauthError(null)
     const supabase = createClient()
     if (!supabase) {
-      setOauthError('Sign-in isn’t configured yet. Add your Supabase keys to enable it.')
+      setOauthError(
+        'Sign-in isn’t reachable from the browser. NEXT_PUBLIC_SUPABASE_URL and a NEXT_PUBLIC_ Supabase key must be set at build time — check /api/health, then redeploy.',
+      )
       return
     }
     setOauthPending(provider)
