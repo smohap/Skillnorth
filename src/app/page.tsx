@@ -1,6 +1,10 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { CompassMark, CompassScore } from '@/components/compass'
 import { Journey3D } from '@/components/journey-3d'
+import { Pricing } from '@/components/pricing'
+import { SiteFooter } from '@/components/footer'
+import { getSessionUser } from '@/lib/auth'
 
 /**
  * Landing page.
@@ -52,7 +56,20 @@ const LIMITS = [
   },
 ]
 
-export default function LandingPage() {
+export default async function LandingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ code?: string }>
+}) {
+  const { code } = await searchParams
+
+  // Resilience: if Supabase's redirect allowlist sends the OAuth code here (the
+  // Site URL) instead of to /auth/callback, hand it to the callback rather than
+  // dropping it — otherwise the user lands back here silently signed out.
+  if (code) redirect(`/auth/callback?code=${encodeURIComponent(code)}`)
+
+  const user = await getSessionUser()
+
   return (
     <main className="mx-auto w-full max-w-[1180px] px-6 py-8">
       <header className="glass mb-6 flex items-center justify-between rounded-2xl px-5 py-3.5">
@@ -63,23 +80,43 @@ export default function LandingPage() {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <Link
-            href="/signin"
-            className="rounded-[10px] border border-[rgba(255,255,255,0.14)] px-4 py-2.5 text-[13px] font-semibold text-[#c3cbdc] transition hover:bg-[rgba(255,255,255,0.06)] hover:text-[#f3f6fb]"
-          >
-            Sign in
-          </Link>
-          <Link
-            href="/dashboard"
-            className="rounded-[10px] bg-[#4fd1c5] px-4 py-2.5 text-[13px] font-semibold text-[#06231f] transition hover:brightness-110 active:scale-[0.98]"
-          >
-            See the demo
-          </Link>
+          {user ? (
+            <>
+              <span className="hidden text-[12.5px] text-[#7c88a3] sm:inline">
+                Signed in as{' '}
+                <strong className="font-semibold text-[#c3cbdc]">{user.name}</strong>
+              </span>
+              <Link
+                href="/dashboard"
+                className="rounded-[10px] bg-[#4fd1c5] px-4 py-2.5 text-[13px] font-semibold text-[#06231f] transition hover:brightness-110 active:scale-[0.98]"
+              >
+                Go to your dashboard
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/signin"
+                className="rounded-[10px] border border-[rgba(255,255,255,0.14)] px-4 py-2.5 text-[13px] font-semibold text-[#c3cbdc] transition hover:bg-[rgba(255,255,255,0.06)] hover:text-[#f3f6fb]"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/signin"
+                className="rounded-[10px] bg-[#4fd1c5] px-4 py-2.5 text-[13px] font-semibold text-[#06231f] transition hover:brightness-110 active:scale-[0.98]"
+              >
+                Get started free
+              </Link>
+            </>
+          )}
         </div>
       </header>
 
       {/* The journey, in 3D — the signature moment */}
-      <section className="glass mb-5 overflow-hidden rounded-3xl px-6 py-12 sm:px-12">
+      <section
+        id="journey"
+        className="glass mb-5 scroll-mt-6 overflow-hidden rounded-3xl px-6 py-12 sm:px-12"
+      >
         <div className="mx-auto mb-8 max-w-[54ch] text-center">
           <span className="font-[family-name:var(--font-mono)] text-[11px] tracking-[0.14em] text-[#8b7fff] uppercase">
             One continuous loop
@@ -225,10 +262,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <footer className="flex flex-col items-center gap-3 py-10 text-center">
-        <CompassMark size={22} />
-        <p className="text-[12px] text-[#7c88a3]">SkillNorth — point your career true north.</p>
-      </footer>
+      <Pricing />
+
+      <SiteFooter />
     </main>
   )
 }

@@ -18,7 +18,12 @@ const NAV = [
   { href: '/tracker', label: 'Tracker', Icon: ListChecks },
 ]
 
-export function RailNav() {
+export interface RailUser {
+  name: string
+  email: string | null
+}
+
+export function RailNav({ user }: { user: RailUser | null }) {
   const pathname = usePathname()
 
   return (
@@ -61,19 +66,33 @@ export function RailNav() {
         <div className="flex items-center gap-2.5">
           <div className="h-8 w-8 flex-none rounded-full bg-gradient-to-br from-[#8b7fff] to-[#4fd1c5]" />
           <div className="min-w-0">
-            <div className="truncate text-[12.5px] font-semibold">Priya Nathan</div>
-            <div className="truncate text-[10.5px] text-[#7c88a3]">Analytics Engineer</div>
+            <div className="truncate text-[12.5px] font-semibold">
+              {user ? user.name : 'Demo profile'}
+            </div>
+            <div className="truncate text-[10.5px] text-[#7c88a3]">
+              {user ? (user.email ?? 'Signed in') : 'Sample data'}
+            </div>
           </div>
         </div>
-        <form action="/auth/signout" method="post">
-          <button
-            type="submit"
-            className="flex w-full items-center gap-2 rounded-[9px] px-2 py-1.5 text-left text-[11.5px] text-[#7c88a3] transition hover:bg-[rgba(255,255,255,0.05)] hover:text-[#c3cbdc]"
+        {user ? (
+          <form action="/auth/signout" method="post">
+            <button
+              type="submit"
+              className="flex w-full items-center gap-2 rounded-[9px] px-2 py-1.5 text-left text-[11.5px] text-[#7c88a3] transition hover:bg-[rgba(255,255,255,0.05)] hover:text-[#c3cbdc]"
+            >
+              <LogOut size={14} strokeWidth={1.7} aria-hidden="true" />
+              Sign out
+            </button>
+          </form>
+        ) : (
+          <Link
+            href="/signin"
+            className="flex items-center gap-2 rounded-[9px] px-2 py-1.5 text-[11.5px] text-[#4fd1c5] transition hover:bg-[rgba(255,255,255,0.05)]"
           >
             <LogOut size={14} strokeWidth={1.7} aria-hidden="true" />
-            Sign out
-          </button>
-        </form>
+            Sign in
+          </Link>
+        )}
       </div>
     </nav>
   )
