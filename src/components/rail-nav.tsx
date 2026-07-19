@@ -2,7 +2,15 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { FileText, LayoutDashboard, ListChecks, LogOut, Search, SlidersHorizontal } from 'lucide-react'
+import {
+  FileText,
+  LayoutDashboard,
+  ListChecks,
+  LogOut,
+  Search,
+  SlidersHorizontal,
+  UserRound,
+} from 'lucide-react'
 import { CompassMark } from '@/components/compass'
 
 /**
@@ -12,6 +20,7 @@ import { CompassMark } from '@/components/compass'
  */
 const NAV = [
   { href: '/dashboard', label: 'Dashboard', Icon: LayoutDashboard },
+  { href: '/profile', label: 'Your Profile', Icon: UserRound },
   { href: '/matches', label: 'Job Matches', Icon: Search },
   { href: '/studio', label: 'Resume Studio', Icon: FileText },
   { href: '/rules', label: 'Automation Rules', Icon: SlidersHorizontal },
