@@ -1,3 +1,5 @@
+import Link from 'next/link'
+import { ChevronRight, Upload } from 'lucide-react'
 import { PageHeader } from '@/components/page-header'
 import {
   AddCertificationForm,
@@ -66,6 +68,26 @@ export default async function ProfilePage() {
             from.
           </p>
         )}
+
+        {/* The fast path. Offered first when there's nothing to lose, and kept
+            available afterwards because people re-upload an updated CV. */}
+        <Link
+          href="/profile/import"
+          className="flex items-center justify-between gap-4 rounded-2xl border border-dashed border-[rgba(255,255,255,0.18)] px-4 py-3.5 transition hover:border-[#4fd1c5] hover:bg-[rgba(79,209,197,0.06)]"
+        >
+          <span className="flex items-center gap-3">
+            <Upload size={17} className="shrink-0 text-[#4fd1c5]" aria-hidden="true" />
+            <span>
+              <span className="block text-[13px] font-semibold">
+                {entryCount === 0 ? 'Start by importing your CV' : 'Import another CV'}
+              </span>
+              <span className="mt-0.5 block text-[11.5px] text-[#7c88a3]">
+                PDF or DOCX. You review every entry before anything is saved.
+              </span>
+            </span>
+          </span>
+          <ChevronRight size={16} className="shrink-0 text-[#7c88a3]" aria-hidden="true" />
+        </Link>
 
         <section className="panel p-5">
           <h2 className="font-[family-name:var(--font-display)] text-[15px] font-semibold">

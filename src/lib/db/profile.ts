@@ -314,6 +314,88 @@ export async function deleteFrom(
   await bumpVersion(row.id)
 }
 
+export interface BulkAddInput {
+  experiences?: NewExperience[]
+  education?: NewEducation[]
+  certifications?: NewCertification[]
+  skills?: NewSkill[]
+}
+
+/**
+ * Insert many entries at once — the shape a CV import produces.
+ *
+ * Distinct from calling the single-row helpers in a loop for two reasons: it bumps
+ * the profile version once instead of once per row (a 40-entry CV would otherwise
+ * invalidate the match cache 40 times), and skills land with source 'parsed' rather
+ * than 'self', which is the honest provenance for something a model read off a
+ * document. Returns how many rows of each kind were written.
+ */
+export async function bulkAdd(input: BulkAddInput): Promise<Record<string, number>> {
+  const supabase = await client()
+  const row = await getOrCreateProfileRow()
+
+  const experiences = (input.experiences ?? []).map((e, i) => ({
+    profile_id: row.id,
+    company: e.company,
+    title: e.title,
+    location: e.location ?? null,
+    start_date: e.startDate ?? null,
+    end_date: e.isCurrent ? null : (e.endDate ?? null),
+    is_current: Boolean(e.isCurrent),
+    bullets: (e.bullets ?? [])
+      .filter((t) => t.trim().length > 0)
+      .map((text, j) => ({ id: `${crypto.randomUUID()}_${j}`, text: text.trim() })),
+    // Most recent first, matching the order the parser returns them in.
+    sort_order: i,
+  }))
+
+  const education = (input.education ?? []).map((e, i) => ({
+    profile_id: row.id,
+    institution: e.institution,
+    qualification: e.qualification,
+    field: e.field ?? null,
+    start_date: e.startDate ?? null,
+    end_date: e.endDate ?? null,
+    sort_order: i,
+  }))
+
+  const certifications = (input.certifications ?? []).map((c) => ({
+    profile_id: row.id,
+    name: c.name,
+    issuer: c.issuer,
+    issued: c.issued ?? null,
+    expires: c.expires ?? null,
+    credential_id: c.credentialId ?? null,
+  }))
+
+  const skills = (input.skills ?? []).map((s) => ({
+    profile_id: row.id,
+    name: s.name,
+    category: s.category ?? null,
+    level: s.level ?? null,
+    years: s.years ?? null,
+    source: 'parsed',
+  }))
+
+  const written: Record<string, number> = {}
+  const tables: [string, Record<string, unknown>[]][] = [
+    ['experiences', experiences],
+    ['education', education],
+    ['certifications', certifications],
+    ['skills', skills],
+  ]
+
+  for (const [table, rows] of tables) {
+    if (rows.length === 0) continue
+    const { error } = await supabase.from(table).insert(rows)
+    if (error) throw new Error(`Could not import your ${table}: ${error.message}`)
+    written[table] = rows.length
+  }
+
+  await bumpVersion(row.id)
+  return written
+}
+
 export interface ProfileBasics {
   fullName: string
   headline?: string
